@@ -1,5 +1,6 @@
 package com.example.galgeleg2
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import galgeleg.Galgelogik
 import java.util.*
+
 
 class MainActivity : AppCompatActivity(), View.OnKeyListener {
     private lateinit var txtinput: TextView
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
         txtinput.setOnKeyListener(this)
 
         livestxt = findViewById(R.id.lives)
-        livestxt.text = "Du har 6 liv før du taber."
+        livestxt.text = "Du har 7 liv før du taber."
 
         debugtxt = findViewById(R.id.test)
 
@@ -41,9 +43,7 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
 
         // Changes enter button on keyboard to execute following code.
-        if (event.action == KeyEvent.ACTION_DOWN &&
-            keyCode == KeyEvent.KEYCODE_ENTER
-        ) {
+        if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
             if (txtinput.length() == 1) {
                 galgelogik.gætBogstav(txtinput.text.toString().decapitalize(Locale.getDefault()))
 
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
                     debugtxt2.text = galgelogik.synligtOrd
                     Toast.makeText(this, "Dit gæt var korrekt!", Toast.LENGTH_LONG).show()
                 } else {
-                    livestxt.text = "Du har " + (6-galgelogik.antalForkerteBogstaver) + " liv tilbage."
+                    livestxt.text = "Du har " + (7-galgelogik.antalForkerteBogstaver) + "liv tilbage."
                     Toast.makeText(this, "Dit gæt var forkert...", Toast.LENGTH_LONG).show()
 
                     // switch case that changes the image
@@ -70,6 +70,22 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
                 debugtxt.text = "Brugte Bogstaver: " + galgelogik.brugteBogstaver.toString()
                 txtinput.text = null
 
+            }
+
+            if (galgelogik.erSpilletSlut()) {
+                if (galgelogik.erSpilletVundet()) {
+                    val i = Intent(this, WonActivity::class.java)
+                    i.putExtra("tries", galgelogik.brugteBogstaver.size)
+                    startActivity(i)
+                } else {
+                    val i = Intent(this, LostActivity::class.java)
+                    i.putExtra("word", galgelogik.ordet)
+                    startActivity(i)
+                }
+
+                // start nyt spil
+                galgelogik.startNytSpil()
+                recreate()
             }
             return true
         }
