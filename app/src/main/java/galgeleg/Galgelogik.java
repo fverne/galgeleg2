@@ -11,6 +11,11 @@ import java.util.Random;
 
 public class Galgelogik {
   /** AHT afprøvning er muligeOrd synlig på pakkeniveau */
+
+  //singleton
+  private static Galgelogik instance = new Galgelogik();
+  public static Galgelogik getInstance(){ return instance; }
+
   ArrayList<String> muligeOrd = new ArrayList<String>();
   private String ordet;
   private ArrayList<String> brugteBogstaver = new ArrayList<String>();
@@ -33,6 +38,14 @@ public class Galgelogik {
     startNytSpil();
   }
 
+
+  public ArrayList<String> getMuligeOrd() {
+    return muligeOrd;
+  }
+
+  public void setMuligeOrd(ArrayList<String> muligeOrd) {
+    this.muligeOrd = muligeOrd;
+  }
 
   public ArrayList<String> getBrugteBogstaver() {
     return brugteBogstaver;
@@ -109,7 +122,7 @@ public class Galgelogik {
       sidsteBogstavVarKorrekt = false;
       System.out.println("Bogstavet var IKKE korrekt: " + bogstav);
       antalForkerteBogstaver = antalForkerteBogstaver + 1;
-      if (antalForkerteBogstaver > 6) {
+      if (antalForkerteBogstaver >= 6) { // custom edit by s173394, now the lives make sense compared to the pictures
         spilletErTabt = true;
       }
     }

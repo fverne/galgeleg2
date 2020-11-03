@@ -7,13 +7,13 @@ public class BenytGalgelogik {
     Galgelogik spil = new Galgelogik();
     spil.startNytSpil();
     // Kommentér ind for at hente ord fra DR
-    /*
+
     try {
       spil.hentOrdFraDr();
     } catch (Exception e) {
       e.printStackTrace();
     }
-    */
+
 
     // Kommentér ind for at hente ord fra et online regneark
     /*
