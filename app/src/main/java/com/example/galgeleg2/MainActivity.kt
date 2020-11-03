@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
     private lateinit var debugtxt: TextView
     private lateinit var debugtxt2: TextView
     private lateinit var galgeimg: ImageView
+    private lateinit var inputtext: TextView
     private val galgelogik: Galgelogik = Galgelogik.getInstance()
     private val handler: Handler = Handler()
     private val bgthread: Executor = newSingleThreadExecutor()
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
     // Changes enter button on keyboard to execute following code.
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
 
+        // if enter button is pressed on keyboard:
         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
             //check if guess is correct, and act based on that
             evaluateGuess()
@@ -69,13 +71,14 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
         // returner true så keyboardet ikke forsvinder
         return true
     }
-    
+
     // metode der sætter UI på skærmbilledet
     private fun initUI() {
         galgeimg = findViewById(R.id.galgeimg)
         galgeimg.setImageResource(R.drawable.galge)
 
         txtinput = findViewById(R.id.guessinput)
+        txtinput.visibility = View.VISIBLE
         txtinput.setOnKeyListener(this)
         txtinput.requestFocus()
 
@@ -95,13 +98,13 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
 
             if (galgelogik.erSidsteBogstavKorrekt()) { // correct guess
                 debugtxt2.text = galgelogik.synligtOrd
-                Toast.makeText(this, "Korrekt bogstav!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.trueguess), Toast.LENGTH_LONG).show()
             } else { // not correct guesss
                 livestxt.text =
                     getString(R.string.youhave) + (6 - galgelogik.antalForkerteBogstaver) + getString(
                         R.string.livesleft
                     )
-                Toast.makeText(this, "Forkert gæt!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.falseguess), Toast.LENGTH_LONG).show()
 
                 // switch case that changes the image depending on lives left
                 when (galgelogik.antalForkerteBogstaver) {
@@ -133,8 +136,8 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
                 startActivity(i)
             }
 
-            // genstart spillet, så det er klart når man returnerer fra tabt/vundet intentet og vil spille igen
-            // test med handler, delay tilføjet for at gøre animationen for intentskiftet mere flydende
+            // genstart spillet, så det er klart når man returnerer fra tabt/vundet skærmbilledet og vil spille igen
+            // delay tilføjet for at gøre animationen for intentskiftet mere flydende
             handler.postDelayed(1000) {
                 recreate()
             }

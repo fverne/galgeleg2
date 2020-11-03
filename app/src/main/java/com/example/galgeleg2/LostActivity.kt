@@ -1,6 +1,7 @@
 package com.example.galgeleg2
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +12,14 @@ class LostActivity : AppCompatActivity() {
     private lateinit var debugtxt: TextView
     private lateinit var debugtxt2: TextView
     private lateinit var galgeimg: ImageView
+    private lateinit var inputtext: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lost)
+        setContentView(R.layout.activity_main)
+
+        inputtext = findViewById(R.id.guessinput)
+        inputtext.visibility = View.INVISIBLE
 
         galgeimg = findViewById(R.id.galgeimg)
         galgeimg.setImageResource(R.drawable.forkert6)
@@ -27,5 +32,7 @@ class LostActivity : AppCompatActivity() {
 
         debugtxt2 = findViewById(R.id.test2)
         debugtxt2.text = getString(R.string.youlost)
+
+
     }
 }
