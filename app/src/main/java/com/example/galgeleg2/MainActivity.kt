@@ -1,5 +1,6 @@
 package com.example.galgeleg2
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -14,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.postDelayed
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import galgeleg.GalgelegsHenter
+import galgeleg.GalgelegsHenterFactory
 import galgeleg.Galgelogik
 import java.lang.reflect.Type
 import java.util.*
@@ -27,7 +30,6 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
     private lateinit var debugtxt: TextView
     private lateinit var debugtxt2: TextView
     private lateinit var galgeimg: ImageView
-    private lateinit var inputtext: TextView
     private val galgelogik: Galgelogik = Galgelogik.getInstance()
     private val handler: Handler = Handler()
     private val bgthread: Executor = newSingleThreadExecutor()
@@ -36,21 +38,26 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // if there is no saved data
-        if (getArrayList("galgeord").isNullOrEmpty()) {
-            // background thread does network stuff
-            bgthread.execute {
-                galgelogik.hentOrdFraRegneark("2")
-                saveArrayList(galgelogik.muligeOrd, "galgeord")
-                galgelogik.setMuligeOrd(getArrayList("galgeord"))
+        var getWordLocation = "DR"
 
-                // main thread updates UI once BGthread is done networking
+        // if there is no saved data
+        if (getArrayList("10").isNullOrEmpty()) {
+            // background thread does network stuff, and saves the retrieved data in storage
+            bgthread.execute {
+                println("Getting word from $getWordLocation")
+                galgelogik.hentOrdOnline(getWordLocation)
+                saveArrayList(galgelogik.muligeOrd, "10")
+                galgelogik.setMuligeOrd(getArrayList("10"))
+
+                // main thread starts game and updates UI once BGthread is done networking
                 handler.post {
+                    galgelogik.startNytSpil()
                     initUI()
                 }
             }
         } else { // else, load the saved data and load the UI
-            galgelogik.setMuligeOrd(getArrayList("galgeord"))
+            println("Getting word from cache...")
+            galgelogik.setMuligeOrd(getArrayList("10"))
             galgelogik.startNytSpil()
             initUI()
         }
@@ -92,6 +99,7 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
         debugtxt2.text = galgelogik.synligtOrd
     }
 
+    @SuppressLint("SetTextI18n")
     private fun evaluateGuess() {
         if (txtinput.length() == 1) {
             galgelogik.gætBogstav(txtinput.text.toString().decapitalize(Locale.getDefault()))
