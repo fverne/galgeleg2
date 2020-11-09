@@ -41,13 +41,13 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
         var getWordLocation = "DR"
 
         // if there is no saved data
-        if (getArrayList("10").isNullOrEmpty()) {
+        if (getArrayList(getWordLocation).isNullOrEmpty()) {
             // background thread does network stuff, and saves the retrieved data in storage
             bgthread.execute {
                 println("Getting word from $getWordLocation")
                 galgelogik.hentOrdOnline(getWordLocation)
-                saveArrayList(galgelogik.muligeOrd, "10")
-                galgelogik.setMuligeOrd(getArrayList("10"))
+                saveArrayList(galgelogik.muligeOrd, getWordLocation)
+                galgelogik.setMuligeOrd(getArrayList(getWordLocation))
 
                 // main thread starts game and updates UI once BGthread is done networking
                 handler.post {
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), View.OnKeyListener {
             }
         } else { // else, load the saved data and load the UI
             println("Getting word from cache...")
-            galgelogik.setMuligeOrd(getArrayList("10"))
+            galgelogik.setMuligeOrd(getArrayList(getWordLocation))
             galgelogik.startNytSpil()
             initUI()
         }
